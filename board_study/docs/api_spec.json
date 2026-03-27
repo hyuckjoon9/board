@@ -126,6 +126,16 @@
             "type": "string",
             "description": "게시글 내용",
             "example": "내용입니다."
+          },
+          "username": {
+            "type": "string",
+            "description": "작성자",
+            "example": "user1"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "작성시간 (yyyy-MM-dd HH:mm)",
+            "example": "2024-01-01 12:00"
           }
         }
       },
@@ -147,6 +157,16 @@
             "type": "string",
             "description": "게시글 내용",
             "example": "내용입니다."
+          },
+          "username": {
+            "type": "string",
+            "description": "작성자",
+            "example": "user1"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "작성시간 (yyyy-MM-dd HH:mm)",
+            "example": "2024-01-01 12:00"
           },
           "comments": {
             "type": "array",
@@ -217,6 +237,16 @@
             "type": "string",
             "description": "댓글 내용",
             "example": "댓글 내용입니다."
+          },
+          "username": {
+            "type": "string",
+            "description": "작성자",
+            "example": "user1"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "작성시간 (yyyy-MM-dd HH:mm)",
+            "example": "2024-01-01 12:05"
           }
         }
       },
@@ -364,7 +394,9 @@
                     {
                       "id": 1,
                       "title": "제목입니다.",
-                      "content": "내용입니다."
+                      "content": "내용입니다.",
+                      "username": "user1",
+                      "createdAt": "2024-01-01 12:00"
                     }
                   ],
                   "totalPages": 1,
@@ -449,7 +481,9 @@
                   "id": 1,
                   "title": "제목입니다.",
                   "content": "내용입니다.",
-                  "comments": [{ "id": 1, "content": "댓글 내용입니다." }]
+                  "username": "user1",
+                  "createdAt": "2024-01-01 12:00",
+                  "comments": [{ "id": 1, "content": "댓글 내용입니다.", "username": "user2", "createdAt": "2024-01-01 12:05" }]
                 }
               }
             }

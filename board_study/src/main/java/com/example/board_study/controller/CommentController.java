@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Comment", description = "댓글 관련 API")
 @RestController
-@CrossOrigin(origins = "http://127.0.0.1:5500")
 @RequestMapping("/post/{postId}/comments")
 public class CommentController {
 

@@ -144,6 +144,8 @@ Authorization: Bearer {JWT_TOKEN}
 | content[].id | Long | 게시글 ID |
 | content[].title | String | 게시글 제목 |
 | content[].content | String | 게시글 내용 |
+| content[].username | String | 작성자 |
+| content[].createdAt | String | 작성시간 (yyyy-MM-dd HH:mm) |
 | totalPages | int | 전체 페이지 수 |
 | totalElements | Long | 전체 게시글 수 |
 | number | int | 현재 페이지 번호 |
@@ -157,7 +159,9 @@ Authorization: Bearer {JWT_TOKEN}
     {
       "id": 1,
       "title": "제목입니다.",
-      "content": "내용입니다."
+      "content": "내용입니다.",
+      "username": "user1",
+      "createdAt": "2024-01-01 12:00"
     }
   ],
   "totalPages": 1,
@@ -198,19 +202,27 @@ Authorization: Bearer {JWT_TOKEN}
 | id | Long | 게시글 ID |
 | title | String | 게시글 제목 |
 | content | String | 게시글 내용 |
+| username | String | 작성자 |
+| createdAt | String | 작성시간 (yyyy-MM-dd HH:mm) |
 | comments | List | 댓글 목록 |
 | comments[].id | Long | 댓글 ID |
 | comments[].content | String | 댓글 내용 |
+| comments[].username | String | 댓글 작성자 |
+| comments[].createdAt | String | 댓글 작성시간 (yyyy-MM-dd HH:mm) |
 
 ```json
 {
   "id": 1,
   "title": "제목입니다.",
   "content": "내용입니다.",
+  "username": "user1",
+  "createdAt": "2024-01-01 12:00",
   "comments": [
     {
       "id": 1,
-      "content": "댓글 내용입니다."
+      "content": "댓글 내용입니다.",
+      "username": "user2",
+      "createdAt": "2024-01-01 12:05"
     }
   ]
 }

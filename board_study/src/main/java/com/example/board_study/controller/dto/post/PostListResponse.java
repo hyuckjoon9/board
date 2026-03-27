@@ -16,11 +16,10 @@ public class PostListResponse {
 
     @Schema(description = "게시글 내용", example = "내용입니다.")
     private String content;
-//    public PostListResponse(Long id, String title, String content){
-//        this.id=id;
-//        this.title=title;
-//        this.content=content;
-//    }
 
+    @Schema(description = "작성자", example = "user1")
+    private String username;
 
+    @Schema(description = "작성시간", example = "2024-01-01 12:00")
+    private String createdAt;
 }

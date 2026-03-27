@@ -16,10 +16,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
 public class PostService {
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
@@ -46,7 +49,9 @@ public class PostService {
                 .map(post -> new PostListResponse(
                         post.getId(),
                         post.getTitle(),
-                        post.getContent()
+                        post.getContent(),
+                        post.getAuthor().getUsername(),
+                        post.getCreatedAt().format(FORMATTER)
                 ))
                 .toList();
     }
@@ -56,7 +61,9 @@ public class PostService {
                 .map(post -> new PostListResponse(
                         post.getId(),
                         post.getTitle(),
-                        post.getContent()
+                        post.getContent(),
+                        post.getAuthor().getUsername(),
+                        post.getCreatedAt().format(FORMATTER)
                 ));
     }
 
@@ -65,7 +72,9 @@ public class PostService {
                 .map(post -> new PostListResponse(
                         post.getId(),
                         post.getTitle(),
-                        post.getContent()
+                        post.getContent(),
+                        post.getAuthor().getUsername(),
+                        post.getCreatedAt().format(FORMATTER)
                 ));
     }
 
@@ -76,7 +85,9 @@ public class PostService {
         List<CommentResponse> commentResponses = comments.stream()
                 .map(comment -> new CommentResponse(
                         comment.getId(),
-                        comment.getContent()
+                        comment.getContent(),
+                        comment.getAuthor().getUsername(),
+                        comment.getCreatedAt().format(FORMATTER)
                 ))
                 .toList();
 
@@ -84,6 +95,8 @@ public class PostService {
                 post.getId(),
                 post.getTitle(),
                 post.getContent(),
+                post.getAuthor().getUsername(),
+                post.getCreatedAt().format(FORMATTER),
                 commentResponses
         );
     }
