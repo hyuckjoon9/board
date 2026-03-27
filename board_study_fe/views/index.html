@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>게시판 - 목록</title>
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <div class="title">Board</div>
+          <div class="muted">Spring REST API 테스트 UI</div>
+        </div>
+      </div>
+      <div class="actions">
+        <input
+          id="apiBase"
+          class="input"
+          style="width: 260px"
+          placeholder="API Base (예: http://localhost:8080)"
+        />
+        <button id="saveBase" class="button">주소 저장</button>
+        <button id="refreshBtn" class="button">새로고침</button>
+        <button id="newBtn" class="button primary">새 글</button>
+        <div class="search">
+          <button id="searchToggle" class="icon-button" aria-label="Search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M10.5 3a7.5 7.5 0 0 1 5.93 12.12l3.72 3.72-1.4 1.41-3.72-3.72A7.5 7.5 0 1 1 10.5 3zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z"
+              />
+            </svg>
+          </button>
+          <div id="searchPanel" class="search-panel">
+            <input
+              id="searchInput"
+              class="input search-input"
+              placeholder="Search title..."
+            />
+            <button id="searchBtn" class="button">Search</button>
+            <button id="searchClear" class="button ghost">Clear</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <div id="grid" class="grid"></div>
+      <div id="pagination" class="pagination"></div>
+    </main>
+
+    <footer class="footer">Made with ❤️ for Spring API</footer>
+
+    <script type="module" src="../assets/js/index.js"></script>
+  </body>
+</html>

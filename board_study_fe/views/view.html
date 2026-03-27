@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>게시판 - 상세</title>
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <div class="title">Board</div>
+          <div class="muted">게시글 상세보기</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="listBtn" class="button">목록</button>
+        <button id="editBtn" class="button">수정</button>
+        <button id="deleteBtn" class="button danger">삭제</button>
+      </div>
+    </header>
+
+    <main class="detail-container">
+      <div id="detail" class="detail-layout detail-wide">
+        <h1 id="detailTitle" class="detail-title"></h1>
+        <div class="detail-body">
+          <div id="detailContent" class="content"></div>
+        </div>
+        <div class="comment-form">
+          <input
+            id="commentInput"
+            class="input"
+            placeholder="댓글을 입력하세요..."
+          />
+          <button id="commentSubmit" class="button primary">등록</button>
+        </div>
+        <div id="commentsList" class="comment-list"></div>
+      </div>
+    </main>
+
+    <footer class="footer"></footer>
+
+    <script type="module" src="../assets/js/view.js"></script>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>게시판 - 작성/수정</title>
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <div class="title">Board</div>
+          <div class="muted">글 작성/수정</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="backBtn" class="button">목록</button>
+        <button id="submitBtn" class="button primary">저장</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <h2 id="mode" style="margin: 0 0 12px 0"></h2>
+      <form id="form" class="form">
+        <label class="label">제목</label>
+        <input id="title" class="input" placeholder="제목을 입력하세요" />
+
+        <label class="label">내용</label>
+        <textarea
+          id="content"
+          class="textarea"
+          placeholder="내용을 입력하세요"
+        ></textarea>
+
+        <div class="toolbar">
+          <button type="submit" id="submitBtnForm" class="button primary">
+            저장
+          </button>
+          <button type="button" id="backBtnForm" class="button">목록</button>
+        </div>
+      </form>
+    </main>
+
+    <footer class="footer">Tip: 목록에서 카드를 눌러 수정하세요.</footer>
+
+    <script type="module" src="../assets/js/post.js"></script>
+    <script>
+      // 헤더 버튼이 폼 버튼을 그대로 트리거하도록 연결
+      document.getElementById('submitBtn').addEventListener('click', () => {
+        document.getElementById('submitBtnForm').click();
+      });
+      document.getElementById('backBtn').addEventListener('click', () => {
+        document.getElementById('backBtnForm').click();
+      });
+      document.getElementById('backBtnForm').addEventListener('click', () => {
+        location.href = 'index.html';
+      });
+    </script>
+  </body>
+</html>

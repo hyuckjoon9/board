@@ -1,0 +1,74 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+*.env
+*.local
+*.secret
+*.secrets
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cer
+*.mobileprovision
+*.jks
+*.keystore
+
+# Dependency directories
+node_modules/
+
+# Package manager logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Build and coverage output
+dist/
+build/
+out/
+coverage/
+.cache/
+.parcel-cache/
+.vite/
+.next/
+.nuxt/
+.svelte-kit/
+
+# Test artifacts
+playwright-report/
+test-results/
+
+# Runtime and local DB files
+*.log
+*.pid
+*.seed
+*.tmp
+*.temp
+*.sqlite
+*.sqlite3
+*.db
+
+# Editor and IDE settings
+.idea/
+.vscode/
+*.code-workspace
+*.suo
+*.user
+*.userossc
+*.sln.docstates
+
+# OS generated files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local tooling
+.eslintcache
+.stylelintcache
+.history/

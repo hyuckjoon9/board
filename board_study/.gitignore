@@ -1,0 +1,58 @@
+# ===== 민감한 정보 / Sensitive Info =====
+src/main/resources/application.properties
+src/main/resources/application-*.properties
+src/main/resources/application-*.yml
+.env
+.env.*
+secrets.properties
+*secret*
+*credential*
+
+# ===== Claude Code =====
+CLAUDE.md
+
+# ===== Gradle Build =====
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# ===== IntelliJ IDEA =====
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+# ===== Eclipse / STS =====
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+# ===== NetBeans =====
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# ===== VS Code =====
+.vscode/
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== 기타 =====
+HELP.md
+*.csv
