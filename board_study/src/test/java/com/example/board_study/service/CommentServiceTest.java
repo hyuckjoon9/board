@@ -3,9 +3,12 @@ package com.example.board_study.service;
 import com.example.board_study.controller.dto.comment.CommentCreateRequest;
 import com.example.board_study.domain.Comment;
 import com.example.board_study.domain.Post;
+import com.example.board_study.domain.User;
+import com.example.board_study.exception.ForbiddenException;
 import com.example.board_study.exception.NotFoundException;
 import com.example.board_study.repository.CommentRepository;
 import com.example.board_study.repository.PostRepository;
+import com.example.board_study.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,21 +33,32 @@ class CommentServiceTest {
     @Mock
     private PostRepository postRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
     @InjectMocks
     private CommentService commentService;
+
+    private User createUser(String username) {
+        User user = new User(username, "encodedPassword");
+        ReflectionTestUtils.setField(user, "id", 1L);
+        return user;
+    }
 
     @Test
     @DisplayName("댓글 작성 - 성공")
     void writeComment_success() {
         // given
-        Post post = new Post("제목", "내용");
+        User user = createUser("user1");
+        Post post = new Post("제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
         CommentCreateRequest request = new CommentCreateRequest();
         ReflectionTestUtils.setField(request, "content", "댓글내용");
         given(postRepository.findById(1L)).willReturn(Optional.of(post));
+        given(userRepository.findByUsername("user1")).willReturn(Optional.of(user));
 
         // when
-        commentService.writeComment(1L, request);
+        commentService.writeComment(1L, request, "user1");
 
         // then
         verify(commentRepository).save(any(Comment.class));
@@ -59,21 +73,22 @@ class CommentServiceTest {
         given(postRepository.findById(999L)).willReturn(Optional.empty());
 
         // when & then
-        assertThrows(NotFoundException.class, () -> commentService.writeComment(999L, request));
+        assertThrows(NotFoundException.class, () -> commentService.writeComment(999L, request, "user1"));
     }
 
     @Test
     @DisplayName("댓글 삭제 - 성공")
     void deleteComment_success() {
         // given
-        Post post = new Post("제목", "내용");
+        User user = createUser("user1");
+        Post post = new Post("제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
-        Comment comment = new Comment(post, "댓글내용");
+        Comment comment = new Comment(post, "댓글내용", user);
         ReflectionTestUtils.setField(comment, "id", 1L);
         given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
 
         // when
-        commentService.deleteComment(1L, 1L);
+        commentService.deleteComment(1L, 1L, "user1");
 
         // then
         verify(commentRepository).delete(comment);
@@ -86,20 +101,36 @@ class CommentServiceTest {
         given(commentRepository.findById(999L)).willReturn(Optional.empty());
 
         // when & then
-        assertThrows(NotFoundException.class, () -> commentService.deleteComment(1L, 999L));
+        assertThrows(NotFoundException.class, () -> commentService.deleteComment(1L, 999L, "user1"));
     }
 
     @Test
     @DisplayName("댓글 삭제 - 다른 게시글의 댓글 삭제 시 IllegalArgumentException 발생")
     void deleteComment_mismatchedPost() {
         // given
-        Post post = new Post("제목", "내용");
+        User user = createUser("user1");
+        Post post = new Post("제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
-        Comment comment = new Comment(post, "댓글내용");
+        Comment comment = new Comment(post, "댓글내용", user);
         ReflectionTestUtils.setField(comment, "id", 1L);
         given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
 
         // when & then - 댓글은 게시글 1번에 속하지만, 게시글 2번으로 요청
-        assertThrows(IllegalArgumentException.class, () -> commentService.deleteComment(2L, 1L));
+        assertThrows(IllegalArgumentException.class, () -> commentService.deleteComment(2L, 1L, "user1"));
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 - 작성자가 다를 때 ForbiddenException 발생")
+    void deleteComment_forbidden() {
+        // given
+        User owner = createUser("owner");
+        Post post = new Post("제목", "내용", owner);
+        ReflectionTestUtils.setField(post, "id", 1L);
+        Comment comment = new Comment(post, "댓글내용", owner);
+        ReflectionTestUtils.setField(comment, "id", 1L);
+        given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
+
+        // when & then
+        assertThrows(ForbiddenException.class, () -> commentService.deleteComment(1L, 1L, "other"));
     }
 }

@@ -6,19 +6,26 @@ import lombok.Getter;
 @Entity
 @Getter
 public class Comment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private String content;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
-    protected Comment(){}
-    public Comment(Post post, String content){
-        this.post=post;
-        this.content=content;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User author;
 
+    protected Comment() {}
+
+    public Comment(Post post, String content, User author) {
+        this.post = post;
+        this.content = content;
+        this.author = author;
+    }
 }

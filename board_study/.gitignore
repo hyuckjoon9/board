@@ -8,11 +8,13 @@ secrets.properties
 *secret*
 *credential*
 
-# ===== Claude Code =====
+# ===== Claude Code / OMC =====
 CLAUDE.md
+.claude/
+.omc/
 
 # ===== Gradle Build =====
-.gradle
+.gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
@@ -52,6 +54,12 @@ bin/
 # ===== OS =====
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# ===== 로그 =====
+*.log
+logs/
+*.log.*
 
 # ===== 기타 =====
 HELP.md

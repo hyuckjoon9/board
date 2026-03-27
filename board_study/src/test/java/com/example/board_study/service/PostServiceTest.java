@@ -4,9 +4,12 @@ import com.example.board_study.controller.dto.post.PostListResponse;
 import com.example.board_study.controller.dto.post.PostResponse;
 import com.example.board_study.domain.Comment;
 import com.example.board_study.domain.Post;
+import com.example.board_study.domain.User;
+import com.example.board_study.exception.ForbiddenException;
 import com.example.board_study.exception.NotFoundException;
 import com.example.board_study.repository.CommentRepository;
 import com.example.board_study.repository.PostRepository;
+import com.example.board_study.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,14 +40,24 @@ class PostServiceTest {
     @Mock
     private CommentRepository commentRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
     @InjectMocks
     private PostService postService;
+
+    private User createUser(String username) {
+        User user = new User(username, "encodedPassword");
+        ReflectionTestUtils.setField(user, "id", 1L);
+        return user;
+    }
 
     @Test
     @DisplayName("게시글 전체 조회 - 성공")
     void findAll_success() {
         // given
-        Post post = new Post("제목", "내용");
+        User user = createUser("user1");
+        Post post = new Post("제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
         given(postRepository.findAll()).willReturn(List.of(post));
 
@@ -62,7 +75,8 @@ class PostServiceTest {
     @DisplayName("게시글 페이지 조회 - 성공")
     void findPage_success() {
         // given
-        Post post = new Post("제목", "내용");
+        User user = createUser("user1");
+        Post post = new Post("제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
         Pageable pageable = PageRequest.of(0, 10);
         Page<Post> page = new PageImpl<>(List.of(post), pageable, 1);
@@ -80,7 +94,8 @@ class PostServiceTest {
     @DisplayName("게시글 제목 검색 - 성공")
     void searchByTitle_success() {
         // given
-        Post post = new Post("검색제목", "내용");
+        User user = createUser("user1");
+        Post post = new Post("검색제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
         Pageable pageable = PageRequest.of(0, 10);
         Page<Post> page = new PageImpl<>(List.of(post), pageable, 1);
@@ -98,9 +113,10 @@ class PostServiceTest {
     @DisplayName("게시글 단건 조회 - 성공")
     void findById_success() {
         // given
-        Post post = new Post("제목", "내용");
+        User user = createUser("user1");
+        Post post = new Post("제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
-        Comment comment = new Comment(post, "댓글내용");
+        Comment comment = new Comment(post, "댓글내용", user);
         ReflectionTestUtils.setField(comment, "id", 1L);
         given(postRepository.findById(1L)).willReturn(Optional.of(post));
         given(commentRepository.findByPostId(1L)).willReturn(List.of(comment));
@@ -129,8 +145,12 @@ class PostServiceTest {
     @Test
     @DisplayName("게시글 생성 - 성공")
     void create_success() {
-        // given & when
-        postService.create("제목", "내용");
+        // given
+        User user = createUser("user1");
+        given(userRepository.findByUsername("user1")).willReturn(Optional.of(user));
+
+        // when
+        postService.create("제목", "내용", "user1");
 
         // then
         verify(postRepository).save(any(Post.class));
@@ -140,12 +160,13 @@ class PostServiceTest {
     @DisplayName("게시글 수정 - 성공")
     void update_success() {
         // given
-        Post post = new Post("제목", "내용");
+        User user = createUser("user1");
+        Post post = new Post("제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
         given(postRepository.findById(1L)).willReturn(Optional.of(post));
 
         // when
-        postService.update(1L, "수정된 제목", "수정된 내용");
+        postService.update(1L, "수정된 제목", "수정된 내용", "user1");
 
         // then
         assertThat(post.getTitle()).isEqualTo("수정된 제목");
@@ -159,19 +180,33 @@ class PostServiceTest {
         given(postRepository.findById(999L)).willReturn(Optional.empty());
 
         // when & then
-        assertThrows(NotFoundException.class, () -> postService.update(999L, "제목", "내용"));
+        assertThrows(NotFoundException.class, () -> postService.update(999L, "제목", "내용", "user1"));
+    }
+
+    @Test
+    @DisplayName("게시글 수정 - 작성자가 다를 때 ForbiddenException 발생")
+    void update_forbidden() {
+        // given
+        User owner = createUser("owner");
+        Post post = new Post("제목", "내용", owner);
+        ReflectionTestUtils.setField(post, "id", 1L);
+        given(postRepository.findById(1L)).willReturn(Optional.of(post));
+
+        // when & then
+        assertThrows(ForbiddenException.class, () -> postService.update(1L, "제목", "내용", "other"));
     }
 
     @Test
     @DisplayName("게시글 삭제 - 성공")
     void delete_success() {
         // given
-        Post post = new Post("제목", "내용");
+        User user = createUser("user1");
+        Post post = new Post("제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
         given(postRepository.findById(1L)).willReturn(Optional.of(post));
 
         // when
-        postService.delete(1L);
+        postService.delete(1L, "user1");
 
         // then
         verify(postRepository).delete(post);
@@ -184,6 +219,19 @@ class PostServiceTest {
         given(postRepository.findById(999L)).willReturn(Optional.empty());
 
         // when & then
-        assertThrows(NotFoundException.class, () -> postService.delete(999L));
+        assertThrows(NotFoundException.class, () -> postService.delete(999L, "user1"));
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 - 작성자가 다를 때 ForbiddenException 발생")
+    void delete_forbidden() {
+        // given
+        User owner = createUser("owner");
+        Post post = new Post("제목", "내용", owner);
+        ReflectionTestUtils.setField(post, "id", 1L);
+        given(postRepository.findById(1L)).willReturn(Optional.of(post));
+
+        // when & then
+        assertThrows(ForbiddenException.class, () -> postService.delete(1L, "other"));
     }
 }
