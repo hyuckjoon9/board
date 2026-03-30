@@ -558,7 +558,7 @@
       "delete": {
         "tags": ["Post"],
         "summary": "게시글 삭제",
-        "description": "게시글을 삭제한다. 작성자 본인만 가능.",
+        "description": "게시글을 삭제한다. 작성자 본인만 가능. 해당 게시글에 달린 댓글도 함께 삭제된다.",
         "security": [{ "bearerAuth": [] }],
         "parameters": [
           {

@@ -322,7 +322,7 @@ Authorization: Bearer {JWT_TOKEN}
 | Method | `DELETE` |
 | URL | `/post/{id}` |
 | 인증 | **필요 (작성자 본인만 가능)** |
-| 설명 | 게시글을 삭제한다. |
+| 설명 | 게시글을 삭제한다. 해당 게시글에 달린 댓글도 함께 삭제된다. |
 
 **Request Headers**
 
