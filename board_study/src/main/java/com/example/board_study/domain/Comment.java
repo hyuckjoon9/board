@@ -7,6 +7,12 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Table(
+        name = "comments",
+        indexes = {
+                @Index(name = "idx_comments_post_id", columnList = "post_id")
+        }
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
