@@ -14,6 +14,15 @@ java {
 	}
 }
 
+// [CHANGE] QClass 생성 경로 설정 (Gradle 9.x 방식)
+def querydslDir = layout.buildDirectory.dir("generated/querydsl").get().asFile.absolutePath
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -54,6 +63,21 @@ dependencies {
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
+}
+
+// [CHANGE] 소스 세트 추가: IDE가 생성된 QClass를 인식하도록 설정
+sourceSets {
+	main.java.srcDirs += [ querydslDir ]
+}
+
+// [CHANGE] 컴파일 태스크 설정: 컴파일 시 QClass 생성 위치 지정
+tasks.withType(JavaCompile).configureEach {
+	options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
+}
+
+// [CHANGE] clean 태스크 확장: clean 시 생성된 QClass 폴더도 함께 삭제
+clean {
+	delete file(querydslDir)
 }
 
 tasks.named('test') {

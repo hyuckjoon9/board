@@ -68,7 +68,7 @@ public class PostService {
     }
 
     public Page<PostListResponse> searchByTitle(String keyword, Pageable pageable) {
-        return postRepository.findByTitleContaining(keyword, pageable)
+        return postRepository.searchByTitle(keyword, pageable)
                 .map(post -> new PostListResponse(
                         post.getId(),
                         post.getTitle(),
