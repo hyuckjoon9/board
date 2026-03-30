@@ -23,7 +23,10 @@ public class AuthService {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 사용자명입니다.");
         }
-        User user = new User(request.getUsername(), passwordEncoder.encode(request.getPassword()));
+        User user = User.builder()
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .build();
         userRepository.save(user);
     }
 

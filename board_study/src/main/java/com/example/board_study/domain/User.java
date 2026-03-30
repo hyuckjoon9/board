@@ -1,7 +1,7 @@
 package com.example.board_study.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,6 +11,9 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "users")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class User implements UserDetails {
 
     @Id
@@ -23,12 +26,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    protected User() {}
-
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
