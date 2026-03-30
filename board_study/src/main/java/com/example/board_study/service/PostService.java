@@ -103,7 +103,12 @@ public class PostService {
 
     public void create(String title, String content, String username) {
         User author = findUserOrThrow(username);
-        Post post = new Post(title, content, author);
+        Post post = Post.builder()
+                .title(title)
+                .content(content)
+                .author(author)
+                .build();
+        //Post post = new Post(title, content, author);
         postRepository.save(post);
     }
 

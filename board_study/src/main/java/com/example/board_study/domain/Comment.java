@@ -1,12 +1,15 @@
 package com.example.board_study.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Comment {
 
     @Id
@@ -25,12 +28,4 @@ public class Comment {
 
     private LocalDateTime createdAt;
 
-    protected Comment() {}
-
-    public Comment(Post post, String content, User author) {
-        this.post = post;
-        this.content = content;
-        this.author = author;
-        this.createdAt = LocalDateTime.now();
-    }
 }

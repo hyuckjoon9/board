@@ -25,7 +25,15 @@ public class CommentService {
                 .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다."));
         User author = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
-        Comment comment = new Comment(post, request.getContent(), author);
+
+        Comment comment = Comment.builder()
+                .post(post)
+                .content(request.getContent())
+                .author(author)
+                .build();
+
+
+        //Comment comment = new Comment(post, request.getContent(), author);
         commentRepository.save(comment);
     }
 

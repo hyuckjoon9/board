@@ -1,13 +1,18 @@
 package com.example.board_study.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Table(name = "posts")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Post {
 
     @Id
@@ -23,17 +28,13 @@ public class Post {
 
     private LocalDateTime createdAt;
 
-    protected Post() {}
-
-    public Post(String title, String content, User author) {
-        this.title = title;
-        this.content = content;
-        this.author = author;
-        this.createdAt = LocalDateTime.now();
-    }
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @Builder.Default
+    private List<Comment> comments = new ArrayList<>();
 
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
     }
+
 }
