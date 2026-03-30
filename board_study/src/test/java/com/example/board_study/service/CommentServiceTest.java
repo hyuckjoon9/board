@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -40,9 +41,27 @@ class CommentServiceTest {
     private CommentService commentService;
 
     private User createUser(String username) {
-        User user = new User(username, "encodedPassword");
+        User user = User.builder().username(username).password("encodedPassword").build();
         ReflectionTestUtils.setField(user, "id", 1L);
         return user;
+    }
+
+    private Post createPost(String title, String content, User author) {
+        return Post.builder()
+                .title(title)
+                .content(content)
+                .author(author)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private Comment createComment(Post post, String content, User author) {
+        return Comment.builder()
+                .content(content)
+                .post(post)
+                .author(author)
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 
     @Test
@@ -50,7 +69,7 @@ class CommentServiceTest {
     void writeComment_success() {
         // given
         User user = createUser("user1");
-        Post post = new Post("제목", "내용", user);
+        Post post = createPost("제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
         CommentCreateRequest request = new CommentCreateRequest();
         ReflectionTestUtils.setField(request, "content", "댓글내용");
@@ -81,9 +100,9 @@ class CommentServiceTest {
     void deleteComment_success() {
         // given
         User user = createUser("user1");
-        Post post = new Post("제목", "내용", user);
+        Post post = createPost("제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
-        Comment comment = new Comment(post, "댓글내용", user);
+        Comment comment = createComment(post, "댓글내용", user);
         ReflectionTestUtils.setField(comment, "id", 1L);
         given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
 
@@ -109,9 +128,9 @@ class CommentServiceTest {
     void deleteComment_mismatchedPost() {
         // given
         User user = createUser("user1");
-        Post post = new Post("제목", "내용", user);
+        Post post = createPost("제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
-        Comment comment = new Comment(post, "댓글내용", user);
+        Comment comment = createComment(post, "댓글내용", user);
         ReflectionTestUtils.setField(comment, "id", 1L);
         given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
 
@@ -124,9 +143,9 @@ class CommentServiceTest {
     void deleteComment_forbidden() {
         // given
         User owner = createUser("owner");
-        Post post = new Post("제목", "내용", owner);
+        Post post = createPost("제목", "내용", owner);
         ReflectionTestUtils.setField(post, "id", 1L);
-        Comment comment = new Comment(post, "댓글내용", owner);
+        Comment comment = createComment(post, "댓글내용", owner);
         ReflectionTestUtils.setField(comment, "id", 1L);
         given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
 

@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,9 +48,18 @@ class PostServiceTest {
     private PostService postService;
 
     private User createUser(String username) {
-        User user = new User(username, "encodedPassword");
+        User user = User.builder().username(username).password("encodedPassword").build();
         ReflectionTestUtils.setField(user, "id", 1L);
         return user;
+    }
+
+    private Post createPost(String title, String content, User author) {
+        return Post.builder()
+                .title(title)
+                .content(content)
+                .author(author)
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 
     @Test
@@ -57,7 +67,7 @@ class PostServiceTest {
     void findAll_success() {
         // given
         User user = createUser("user1");
-        Post post = new Post("제목", "내용", user);
+        Post post = createPost("제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
         given(postRepository.findAll()).willReturn(List.of(post));
 
@@ -76,7 +86,7 @@ class PostServiceTest {
     void findPage_success() {
         // given
         User user = createUser("user1");
-        Post post = new Post("제목", "내용", user);
+        Post post = createPost("제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
         Pageable pageable = PageRequest.of(0, 10);
         Page<Post> page = new PageImpl<>(List.of(post), pageable, 1);
@@ -95,7 +105,7 @@ class PostServiceTest {
     void searchByTitle_success() {
         // given
         User user = createUser("user1");
-        Post post = new Post("검색제목", "내용", user);
+        Post post = createPost("검색제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
         Pageable pageable = PageRequest.of(0, 10);
         Page<Post> page = new PageImpl<>(List.of(post), pageable, 1);
@@ -114,9 +124,14 @@ class PostServiceTest {
     void findById_success() {
         // given
         User user = createUser("user1");
-        Post post = new Post("제목", "내용", user);
+        Post post = createPost("제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
-        Comment comment = new Comment(post, "댓글내용", user);
+        Comment comment = Comment.builder()
+                .content("댓글내용")
+                .post(post)
+                .author(user)
+                .createdAt(LocalDateTime.now())
+                .build();
         ReflectionTestUtils.setField(comment, "id", 1L);
         given(postRepository.findById(1L)).willReturn(Optional.of(post));
         given(commentRepository.findByPostId(1L)).willReturn(List.of(comment));
@@ -161,7 +176,7 @@ class PostServiceTest {
     void update_success() {
         // given
         User user = createUser("user1");
-        Post post = new Post("제목", "내용", user);
+        Post post = createPost("제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
         given(postRepository.findById(1L)).willReturn(Optional.of(post));
 
@@ -188,7 +203,7 @@ class PostServiceTest {
     void update_forbidden() {
         // given
         User owner = createUser("owner");
-        Post post = new Post("제목", "내용", owner);
+        Post post = createPost("제목", "내용", owner);
         ReflectionTestUtils.setField(post, "id", 1L);
         given(postRepository.findById(1L)).willReturn(Optional.of(post));
 
@@ -201,7 +216,7 @@ class PostServiceTest {
     void delete_success() {
         // given
         User user = createUser("user1");
-        Post post = new Post("제목", "내용", user);
+        Post post = createPost("제목", "내용", user);
         ReflectionTestUtils.setField(post, "id", 1L);
         given(postRepository.findById(1L)).willReturn(Optional.of(post));
 
@@ -227,7 +242,7 @@ class PostServiceTest {
     void delete_forbidden() {
         // given
         User owner = createUser("owner");
-        Post post = new Post("제목", "내용", owner);
+        Post post = createPost("제목", "내용", owner);
         ReflectionTestUtils.setField(post, "id", 1L);
         given(postRepository.findById(1L)).willReturn(Optional.of(post));
 
